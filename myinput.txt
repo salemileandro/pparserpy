@@ -1,0 +1,5 @@
+TimeAxis.Start                0
+TimeAxis.End                  1e15
+TimeAxis.Nsteps               1000
+File.LoadPotential            true
+File.Potential                pot.dat

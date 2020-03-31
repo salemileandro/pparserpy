@@ -69,11 +69,11 @@ class ReadInput
 		{
 			std::ofstream write(filename.c_str());
 			assert(write.is_open());
-			write << "TimeAxis.Start" << "    " << timeaxis_start_ << std::endl;
-			write << "TimeAxis.End" << "    " << timeaxis_end_ << std::endl;
-			write << "TimeAxis.Nsteps" << "    " << timeaxis_nsteps_ << std::endl;
-			write << "File.LoadPotential" << "    " << file_loadpotential_ << std::endl;
-			write << "File.Potential" << "    " << file_potential_ << std::endl;
+			write << "TimeAxis.Start" << "                " << timeaxis_start_ << std::endl;
+			write << "TimeAxis.End" << "                  " << timeaxis_end_ << std::endl;
+			write << "TimeAxis.Nsteps" << "               " << timeaxis_nsteps_ << std::endl;
+			write << "File.LoadPotential" << "            " << file_loadpotential_ << std::endl;
+			write << "File.Potential" << "                " << file_potential_ << std::endl;
 			write.close();
 		}
 

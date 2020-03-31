@@ -175,10 +175,9 @@ class PParserPy:
                     if type == "string":
                         type = "std::" + type
 
-                    new_file.append("\t\t\twrite << \"%s\" << \"    \" << %s << std::endl;"
-                                    % (variable["user_name"], variable["cpp_name"]))
+                    new_file.append("\t\t\twrite << \"%s\" << \"%s\" << %s << std::endl;"
+                                    % (variable["user_name"], (30 - len(variable["user_name"])) * " ", variable["cpp_name"]))
         self.__header_file = new_file[:]
-
 
     def __user_defined_variables_call(self):
         new_file = []
