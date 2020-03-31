@@ -1,190 +1,205 @@
 from utils import *
-
-''' 
-    Allowed types 
-'''
-legit_var_types = ["double", "int", "string", "bool"]
-
-''' 
-    Fields in the input file for !new_var
-        Those are list of tuples. 
-            The first field of the tuple if the name of the field.
-            The second field of the tuple is the must_exist flag
-'''
-var_fields = [("namespace", True),
-              ("name", True),
-              ("type", True),
-              ("default", True),
-              ("external unit", False),
-              ("internal unit", False),
-              ("comment", False),
-              ]
-
-''' 
-    Fields in the input file for !new_unit
-        Those are list of tuples. 
-            The first field of the tuple if the name of the field.
-            The second field of the tuple is the must_exist flag
-'''
-unit_fields = [("external unit", True),
-               ("internal unit", True),
-               ("conversion", True),
-               ]
+from Variable import Variable
+from UnitConvertor import UnitConvertor
 
 
 class PParserPy:
     """
     Class that handles the reading and parsing of the pppy.in file.
     """
-    def __init__(self, input_file, verbose = True):
+    def __init__(self, input_file="pppy.in", name="ReadInput", verbose=True):
 
+        # Fetch the basic members from the object initializer
+        self.__input_file = input_file
+        self.__name = name
         self.__verbose = verbose
 
-        # Building the lists self.__var_allowed_list, self.__var_must_exist, self.__unit_allowed_list
-        # and  self.__unit_must_exist
-        self.__initialize_control_lists()
-
-        # Reading and parsing the file
-        str_input_file = read_file(input_file, ignore_char="#")
-
-        # Building the list of dictionaries
-        self.var_list_dic = self.populate_list_dic(str_input_file, "!new_var",
-                                                   self.__var_allowed_list, self.__var_must_exist)
-
-        self.unit_list_dic = self.populate_list_dic(str_input_file, "!new_unit",
-                                                    self.__unit_allowed_list, self.__unit_must_exist)
-
+        # Initialize and populate the variable list with variables defined in the input_file
+        self.variable_list = []
+        self.__parse_variables()
         if self.__verbose:
-            print("Printing self.var_list_dic")
-            for i in self.var_list_dic:
-                print("Variable:")
-                for j in self.__var_allowed_list:
-                    print("\t",j,"%s" %((15 - len(j)) * " "), i[j])
-            print("")
+            print("Here are the user defined variables")
+            for i in self.variable_list:
+                print(i)
 
-            print("Printing self.unit_list_dic")
-            for i in self.unit_list_dic:
-                print("Unit:")
-                for j in self.__unit_allowed_list:
-                    print("\t",j,"%s" %((15 - len(j)) * " "), i[j])
-            print("")
-
-        # Converting the list of dictionaries into dictionaries of lists
-        self.var_dic_list = listdic_to_diclist(self.var_list_dic)
-        self.unit_dic_list = listdic_to_diclist(self.unit_list_dic)
+        # Initialize the UnitConvertor and teach it the conversions as defined in the input_file
+        self.unitconvertor = UnitConvertor()
+        self.__parse_units()
         if self.__verbose:
-            print("")
-            print("Printing the dictionary of lists for variables")
-            for i in self.var_dic_list:
-                print(i, self.var_dic_list[i])
+            print("Here are the user defined unit conversion + inverse conversions + unit conversions")
+            print(self.unitconvertor)
 
-            print("")
-            print("Printing the dictionary of lists for units")
-            for i in self.unit_dic_list:
-                print(i, self.unit_dic_list[i])
-            print("")
+        # Initialize the header file (list of string where each element is a line)
+        self.__header_file = []
+        self.__read_prototype()
+        self.__rename_prototype()
+        self.__look_for_variable_call()
+        self.__unit_conversion_call()
+        self.__definition_of_get_functions_call()
+        self.__user_defined_variables_call()
+        self.__generate_input_file_call()
 
-    def __initialize_control_lists(self):
+        f = open("%s.h" %self.__name, "w+")
+        for i in self.__header_file:
+            f.write("%s\n" % i)
+        f.close()
+
+    def __parse_variables(self):
         """
-        Initialize the control lists
-            self.__var_allowed_list is the list of allowed variable field names, e.g. Namespace, Name, Default, ...
-            self.__var_must_exist is the list of boolean value controlling if a variable field name must exist.
-            Important field name, such as Namespace or Name MUST exists. Other, like Default, can be omitted.
-            In such cases, default is set to None
-
-            self.__unit_allowed_list and self.__unit_must_exist are the same except that they refer to unit
-            handling.
-
-        :return: None but populate internal class members self.__var_allowed_list, self.__var_can_be_inexistant,
-        self.__unit_allowed_list and self.__unit_can_be_inexistent.
+        Parse the variables in the input file (filename stored in self.__input_file). Each variable is defined
+        after the !new_var flag.
+        After running this member function, the self.variable_list is populated as a list of Variabe objects.
+        :return: None (populate the self.variable_list list)
         """
+        str_input_file = read_file(self.__input_file, ignore_char="#")
 
-        self.__var_allowed_list = [f[0] for f in var_fields]    # List of allowed variable field names
-        self.__var_must_exist   = [f[1] for f in var_fields]    # List of flag to check if a variable field name can be inexistant
-
-        self.__unit_allowed_list = [f[0] for f in unit_fields]    # List of allowed unit field names
-        self.__unit_must_exist   = [f[1] for f in unit_fields]    # List of flag to check if a unit field name can be inexistant
-
-    def populate_list_dic(self, str_file: list, target_word: str, allowed_fields: list, must_exist: list):
-        '''
-        Populate a list of dictionary using the input written in the str_file str list. The file might look like this:
-        !target_word
-            Namespace = TimeAxis
-            ...
-
-
-        Each new element of the list is initialized once we encounter the flag "!target_word" in the file. Following
-        this flag, the field name is on the left of each equal sign and the value on the right. The equal sign is used
-        as a delimiter and therefore should NEVER be used in the naming of the field and/or value
-
-        :param str_file:        list    List of string where each element is a relevant line of the file.
-        :param target_word:     str     Target word that initialize the building of a new element of the list
-        :param allowed_fields:  list    List of string of allowed field name. Throw an error if the field name is not
-                                        in this list
-        :param must_exist:      list    List of boolean flags to check if a particular field must be user defined or not
-        :return:                list    Return a list of dictionaries built as aforementioned
-        '''
-
-        i = 0
-        target_found = False
-        output_list = []
-        local_dic = {}
-        while i < len(str_file):
-            if str_file[i][0] == "!" and target_word in str_file[i]:
-                target_found = True
-                i += 1
-                if len(local_dic) != 0:
-                    output_list.append(local_dic)
-                    local_dic = {}
+        var_list = []
+        local_list = []
+        save_flag = False
+        for line in str_input_file:
+            if "!new_var" in line:
+                if save_flag:
+                    var_list.append(local_list)
+                    local_list = []
+                save_flag = True
+                continue
+            if "!new_unit" in line:
+                save_flag = False
+                continue
+            if save_flag:
+                local_list.append(line)
                 continue
 
-            if str_file[i][0] == "!" and (not (target_word in str_file[i])):
-                target_found = False
-                i += 1
+        if len(local_list) != 0:
+            var_list.append(local_list)
+            local_list = []
+
+        for i in var_list:
+            x = Variable()
+            x.parse(i)
+            self.variable_list.append(x)
+
+    def __parse_units(self):
+        str_input_file = read_file(self.__input_file, ignore_char="#")
+
+        var_list = []
+        local_list = []
+        save_flag = False
+        for line in str_input_file:
+            if "!new_unit" in line:
+                if save_flag:
+                    var_list.append(local_list)
+                    local_list = []
+                save_flag = True
                 continue
-
-            if not target_found:
-                i +=1
+            if "!new_var" in line:
+                save_flag = False
                 continue
+            if save_flag:
+                local_list.append(line)
+                continue
+        if save_flag:
+            var_list.append(local_list)
 
-            words = str_file[i].split("=")
-            for j in range(0, len(words)):
-                words[j] = words[j].strip(" ").strip("\t")
-            words[0] = words[0].lower()
+        for unit in var_list:
+            dic = {}
+            for line in unit:
+                words = line.strip("\n").strip(" ").strip("\t").split("=")
+                words = [f.strip("\n").strip(" ").strip("\t") for f in words]
+                dic[words[0].lower()] = words[1]
+            assert(is_subset(list(dic.keys()), ["external unit", "internal unit", "conversion"]))
+            self.unitconvertor.add_unit(dic["external unit"], dic["internal unit"], dic["conversion"])
 
-            assert(len(words) == 2)
-            assert(words[0] in allowed_fields)
+    def __read_prototype(self):
+        f = open("Prototype.h", "r")
+        for i in f:
+            self.__header_file.append(i.strip("\n"))
+        f.close()
 
-            local_dic[words[0]] = words[1]
+    def __rename_prototype(self):
+        for i in range(0, len(self.__header_file)):
+            self.__header_file[i] = self.__header_file[i].replace("PROTOTYPE", "%s" % self.__name.upper())
+            self.__header_file[i] = self.__header_file[i].replace("Prototype", "%s" % self.__name)
+            self.__header_file[i] = self.__header_file[i].replace("prototype", "%s" % self.__name.lower())
 
-            i += 1
+    def __look_for_variable_call(self):
+        new_file = []
+        for i in range(0, len(self.__header_file)):
+            if "//LOOK_FOR_VARIABLE_CALL" not in self.__header_file[i]:
+                new_file.append(self.__header_file[i])
+            else:
+                for variable in self.variable_list:
+                    new_file.append("\t\t\tthis->LookForVariable(%s, std::string(\"%s\"));" % (variable["cpp_name"], variable["user_name"]))
+        self.__header_file = new_file[:]
 
-        if len(local_dic) != 0:
-            output_list.append(local_dic)
-            local_dic = {}
-
-        output_list = self.fill_list_dic(output_list, allowed_fields, must_exist)
-        return output_list
-
-
-    def fill_list_dic(self, list_dic: list, allowed_fields: list, must_exist: list):
+    def __unit_conversion_call(self):
         """
-        Ensure that each element of the list_dic contains ALL the fields in allowed fields. If a field is not contained,
-        then the None value is added.
-
-        :param list_dic: list           List of dictionary. Each element represent a variable or unit
-        :param allowed_fields: list     List of allowed field
-        :param must_exist: list         List of must_exist flags for the allowed_field
+        Look for the //UNIT_CONVERSION_CALL flag in self.__header_file and replace it with
+        the appropriate unit conversion call for each variable for which a unit conversion
+        is necessary.
         :return:
         """
+        new_file = []
+        for i in range(0, len(self.__header_file)):
+            if "//UNIT_CONVERSION_CALL" not in self.__header_file[i]:
+                new_file.append(self.__header_file[i])
+            else:
+                for variable in self.variable_list:
+                    if variable["external unit"] is not None:
+                        new_file.append("\t\t\tthis->%s *= %s;"
+                                        % (variable["cpp_name"], self.unitconvertor[variable["external unit"]][variable["internal unit"]]))
+        self.__header_file = new_file[:]
 
-        for i in range(0, len(list_dic)):
-            for j in range(0, len(allowed_fields)):
-                if not(allowed_fields[j] in list_dic[i]):
-                    if must_exist[j]:
-                        print(list_dic[i])
-                        print("Error... field %s MUST exist" % allowed_fields[j])
-                        assert(False)
-                    list_dic[i][allowed_fields[j]] = None
+    def __definition_of_get_functions_call(self):
+        new_file = []
+        for i in range(0, len(self.__header_file)):
+            if "//DEFINITION_OF_GET_FUNCTIONS" not in self.__header_file[i]:
+                new_file.append(self.__header_file[i])
+            else:
+                for variable in self.variable_list:
+                    type = variable["type"]
+                    if type in ["string"]:
+                        type = "std::" + type
+                    new_file.append("\t\t%s %s() { return %s;}" % (type, variable["get_name"], variable["cpp_name"]))
+        self.__header_file = new_file[:]
 
-        return list_dic
+    def __generate_input_file_call(self):
+        new_file = []
+        for i in range(0, len(self.__header_file)):
+            if "//GENERATE_INPUT_FILE" not in self.__header_file[i]:
+                new_file.append(self.__header_file[i])
+            else:
+                for variable in self.variable_list:
+                    type = variable["type"]
+
+                    if type == "string":
+                        type = "std::" + type
+
+                    new_file.append("\t\t\twrite << \"%s\" << \"    \" << %s << std::endl;"
+                                    % (variable["user_name"], variable["cpp_name"]))
+        self.__header_file = new_file[:]
+
+
+    def __user_defined_variables_call(self):
+        new_file = []
+        for i in range(0, len(self.__header_file)):
+            if "//USER_DEFINED_VARIABLES" not in self.__header_file[i]:
+                new_file.append(self.__header_file[i])
+            else:
+                for variable in self.variable_list:
+                    type = variable["type"]
+                    default = variable["default"]
+
+                    if type == "string":
+                        type = "std::" + type
+                        default = "\"" + default + "\""
+
+                    if type == "bool":
+                        if default == "0" or default.lower() == "false":
+                            default = "false"
+                        if default == "1" or default.lower() == "true":
+                            default = "true"
+
+                    new_file.append("\t\t%s %s = %s;" % (type, variable["cpp_name"], default))
+        self.__header_file = new_file[:]
+

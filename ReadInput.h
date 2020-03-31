@@ -44,19 +44,24 @@ class ReadInput
             read.close();
 
 
-			LookForVariable(timeaxis_start_, std::string(TimeAxis.Start)
-			LookForVariable(timeaxis_end_, std::string(TimeAxis.End)
-			LookForVariable(timeaxis_nsteps_, std::string(TimeAxis.Nsteps)
-			LookForVariable(file_loadpotential_, std::string(File.LoadPotential)
-			LookForVariable(file_potential_, std::string(File.Potential)
+			this->LookForVariable(timeaxis_start_, std::string("TimeAxis.Start"));
+			this->LookForVariable(timeaxis_end_, std::string("TimeAxis.End"));
+			this->LookForVariable(timeaxis_nsteps_, std::string("TimeAxis.Nsteps"));
+			this->LookForVariable(file_loadpotential_, std::string("File.LoadPotential"));
+			this->LookForVariable(file_potential_, std::string("File.Potential"));
 
-DO SOMETHING
+			this->timeaxis_start_ *= 2.4188843265857e-17;
+			this->timeaxis_end_ *= 2.4188843265857e-17;
 
         }
 
         ~ReadInput(){};
 
-        //DEFINITION_OF_GET_FUNCTIONS
+		double Get_TimeAxis_Start() { return timeaxis_start_;}
+		double Get_TimeAxis_End() { return timeaxis_end_;}
+		int Get_TimeAxis_Nsteps() { return timeaxis_nsteps_;}
+		bool Get_File_LoadPotential() { return file_loadpotential_;}
+		std::string Get_File_Potential() { return file_potential_;}
 
 
 
@@ -64,7 +69,11 @@ DO SOMETHING
 		{
 			std::ofstream write(filename.c_str());
 			assert(write.is_open());
-			//GENERATE_INPUT_FILE
+			write << "TimeAxis.Start" << "    " << timeaxis_start_ << std::endl;
+			write << "TimeAxis.End" << "    " << timeaxis_end_ << std::endl;
+			write << "TimeAxis.Nsteps" << "    " << timeaxis_nsteps_ << std::endl;
+			write << "File.LoadPotential" << "    " << file_loadpotential_ << std::endl;
+			write << "File.Potential" << "    " << file_potential_ << std::endl;
 			write.close();
 		}
 
@@ -240,7 +249,11 @@ DO SOMETHING
         std::string input_file_;
         std::vector<std::string> input_text_;
 
-        //USER_DEFINED_VARIABLES
+		double timeaxis_start_ = 0.0;
+		double timeaxis_end_ = 10.0;
+		int timeaxis_nsteps_ = 1000;
+		bool file_loadpotential_ = false;
+		std::string file_potential_ = "potential.dat";
 };
 
 #endif // READINPUT_H
