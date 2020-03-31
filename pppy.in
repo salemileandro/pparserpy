@@ -1,0 +1,58 @@
+### This is a template that gives and idea on how to write your own pp.in file
+### Any line that start with '#' is considered as a comment, any text set after '#' is disregarded
+### e.g. "SomeTextThatPParserPyWillRead # But This Is NOT Read"
+
+!new_var
+    Namespace       = TimeAxis
+    Name            = Start
+    Type            = double
+    default         = 0.0
+    External Unit   = fs
+    Internal Unit   = au
+    Comment         = Starting time of the simulation
+
+!new_var
+    Namespace       = TimeAxis
+    Name            = End
+    Type            = double
+    default         = 10.0
+    External Unit   = fs
+    Internal Unit   = au
+    Comment         = Ending time of the simulation
+
+!new_var
+    Namespace       = TimeAxis
+    Name            = Nsteps
+    Type            = int
+    default         = 1000
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Number of time steps betweeen TimeAxis.Start and TimeAxis.End
+
+!new_var
+    Namespace       = File
+    Name            = LoadPotential
+    Type            = bool
+    default         = 0
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Flag to activate reading of external potential file
+
+!new_var
+    Namespace       = File
+    Name            = Potential
+    Type            = string
+    default         = potential.dat
+    External Unit   = None
+    Internal Unit   = None
+    #Comment         = Filename of external potential (read only if File.LoadPotential is set to True !)
+
+!new_unit
+    External Unit   = fs
+    Internal Unit   = au
+    Conversion      = 2.4188843265857e-17
+
+!new_unit
+    External Unit   = s
+    Internal Unit   = au
+    Conversion      = 2.4188843265857e-32
