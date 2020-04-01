@@ -9,10 +9,10 @@
 
 class Prototype
 {
-    public:
+	public:
 
-        Prototype(std::string input_file, char comment = '#')
-        {
+		Prototype(std::string input_file, char comment = '#')
+		{
 		/* ***************************
 		*** READING THE INPUT FILE ***
 		******************************/
@@ -20,39 +20,39 @@ class Prototype
 			{
 				this->GenerateInputFile(input_file);
 			}
-            this->input_file_ = input_file;
-            std::ifstream read(this->input_file_);
-            assert(read.is_open());
+			this->input_file_ = input_file;
+			std::ifstream read(this->input_file_);
+			assert(read.is_open());
 
-            std::string tmp;
-            std::string line;
-            this->input_text_.clear();
-            while( !read.eof() )
-            {
-                std::getline(read, line);
-                tmp = "";
-                for(unsigned i=0; i<line.size(); i++)
-                {
-                    if(line[i] == comment)
-                        break;
-                    else
-                        tmp += line[i];
-                }
-                if( tmp.size() > 1)
-                    this->input_text_.push_back(tmp);
-            }
-            read.close();
+			std::string tmp;
+			std::string line;
+			this->input_text_.clear();
+			while( !read.eof() )
+			{
+				std::getline(read, line);
+				tmp = "";
+				for(unsigned i=0; i<line.size(); i++)
+				{
+					if(line[i] == comment)
+						break;
+					else
+						tmp += line[i];
+				}
+				if( tmp.size() > 1)
+					this->input_text_.push_back(tmp);
+			}
+			read.close();
 
 
-            //LOOK_FOR_VARIABLE_CALL
+			//LOOK_FOR_VARIABLE_CALL
 
-            //UNIT_CONVERSION_CALL
+			//UNIT_CONVERSION_CALL
 
-        }
+		}
 
-        ~Prototype(){};
+		~Prototype(){};
 
-        //DEFINITION_OF_GET_FUNCTIONS
+		//DEFINITION_OF_GET_FUNCTIONS
 
 
 
@@ -64,9 +64,9 @@ class Prototype
 			write.close();
 		}
 
-    protected:
+	protected:
 
-    private:
+	private:
 
 		inline bool IsFileExists (const std::string& filename)
 		{
@@ -74,153 +74,151 @@ class Prototype
 			return f.good();
 		}
 
-        std::vector<std::string> Split(std::string str, char separator = ' ')
-        {
-            std::vector<std::string> words;
-            std::string temp;
+		std::vector<std::string> Split(std::string str, char separator = ' ')
+		{
+			std::vector<std::string> words;
+			std::string temp;
 
-            temp = "";
-            for(unsigned i=0; i<str.size(); i++)
-            {
-                if(str[i] != separator)
-                    temp += str[i];
-                else
-                {
-                    if( temp != "" )
-                    {
-                        words.push_back(temp);
-                        temp = "";
-                    }
-                }
-            }
-            if( temp != "" )
-            {
-                words.push_back(temp);
-                temp = "";
-            }
+			temp = "";
+			for(unsigned i=0; i<str.size(); i++)
+			{
+				if(str[i] != separator)
+					temp += str[i];
+				else
+				{
+					if( temp != "" )
+					{
+						words.push_back(temp);
+						temp = "";
+					}
+				}
+			}
+			if( temp != "" )
+			{
+				words.push_back(temp);
+				temp = "";
+			}
 
-            return words;
-        }
+			return words;
+		}
 
 	/* *******************************************
 	*** LookForVariable FUNCTIONS (Multi-Type) ***
 	**********************************************/
-        void LookForVariable(bool &variable, std::string variable_name)
-        {
-            for(unsigned i=0; i<this->input_text_.size(); i++)
-            {
-                auto words = this->Split(input_text_[i]);
-                if (variable_name == words[0])
-                {
-                    if (words[1] == "0" || words[1] == "false" || words[1] == "False" )
-                        variable = false;
-                    if (words[1] == "1" || words[1] == "true" || words[1] == "True" )
-                        variable = true;
-                    break;
-                }
-            }
-            return;
-        }
+		void LookForVariable(bool &variable, std::string variable_name)
+		{
+			for(unsigned i=0; i<this->input_text_.size(); i++)
+			{
+				auto words = this->Split(input_text_[i]);
+				if (variable_name == words[0])
+				{
+					if (words[1] == "0" || words[1] == "false" || words[1] == "False" )
+						variable = false;
+					if (words[1] == "1" || words[1] == "true" || words[1] == "True" )
+						variable = true;
+					break;
+				}
+			}
+			return;
+		}
 
-        void LookForVariable(int &variable, std::string variable_name)
-        {
-            for(unsigned i=0; i<this->input_text_.size(); i++)
-            {
-                auto words = this->Split(input_text_[i]);
-                if (variable_name == words[0])
-                {
-                    variable = std::stoi(words[1]);
-                    break;
-                }
-            }
-            return;
-        }
+		void LookForVariable(int &variable, std::string variable_name)
+		{
+			for(unsigned i=0; i<this->input_text_.size(); i++)
+			{
+				auto words = this->Split(input_text_[i]);
+				if (variable_name == words[0])
+				{
+					variable = std::stoi(words[1]);
+					break;
+				}
+			}
+			return;
+		}
 
-        void LookForVariable(double &variable, std::string variable_name)
-        {
-            for(unsigned i=0; i<this->input_text_.size(); i++)
-            {
-                auto words = this->Split(input_text_[i]);
-                if (variable_name == words[0])
-                {
-                    variable = std::stod(words[1]);
-                    break;
-                }
-            }
-            return;
-        }
+		void LookForVariable(double &variable, std::string variable_name)
+		{
+			for(unsigned i=0; i<this->input_text_.size(); i++)
+			{
+				auto words = this->Split(input_text_[i]);
+				if (variable_name == words[0])
+				{
+					variable = std::stod(words[1]);
+					break;
+				}
+			}
+			return;
+		}
 
-        void LookForVariable(std::string &variable, std::string variable_name)
-        {
-            for(unsigned i=0; i<this->input_text_.size(); i++)
-            {
-                auto words = this->Split(input_text_[i]);
-                if (variable_name == words[0])
-                {
-                    variable = words[1];
-                    break;
-                }
-            }
-            return;
-        }
+		void LookForVariable(std::string &variable, std::string variable_name)
+		{
+			for(unsigned i=0; i<this->input_text_.size(); i++)
+			{
+				auto words = this->Split(input_text_[i]);
+				if (variable_name == words[0])
+				{
+					variable = words[1];
+					break;
+				}
+			}
+			return;
+		}
 
-        void LookForVariable(std::vector<double> &variable, std::string variable_name)
-        {
-            for(unsigned i=0; i<this->input_text_.size(); i++)
-            {
-                auto words = this->Split(input_text_[i]);
-                if (variable_name == words[0])
-                {
+		void LookForVariable(std::vector<double> &variable, std::string variable_name)
+		{
+			for(unsigned i=0; i<this->input_text_.size(); i++)
+			{
+				auto words = this->Split(input_text_[i]);
+				if (variable_name == words[0])
+				{
 					variable.clear();
 					for(unsigned i=1; i<words.size(); i++)
 					{
 						variable.push_back(std::stod(words[i]));
 					}
 				}
-            }
-            return;
+			}
+			return;
 		}
 
-        void LookForVariable(std::vector<int> &variable, std::string variable_name)
-        {
-            for(unsigned i=0; i<this->input_text_.size(); i++)
-            {
-                auto words = this->Split(input_text_[i]);
-                if (variable_name == words[0])
-                {
+		void LookForVariable(std::vector<int> &variable, std::string variable_name)
+		{
+			for(unsigned i=0; i<this->input_text_.size(); i++)
+			{
+				auto words = this->Split(input_text_[i]);
+				if (variable_name == words[0])
+				{
 					variable.clear();
 					for(unsigned i=1; i<words.size(); i++)
 					{
 						variable.push_back(std::stoi(words[i]));
 					}
 				}
-            }
-            return;
-        }
+			}
+			return;
+		}
 
-        void LookForVariable(std::vector<std::string> &variable, std::string variable_name)
-        {
-            for(unsigned i=0; i<this->input_text_.size(); i++)
-            {
-                auto words = this->Split(input_text_[i]);
-                if (variable_name == words[0])
-                {
+		void LookForVariable(std::vector<std::string> &variable, std::string variable_name)
+		{
+			for(unsigned i=0; i<this->input_text_.size(); i++)
+			{
+				auto words = this->Split(input_text_[i]);
+				if (variable_name == words[0])
+				{
 					variable.clear();
 					for(unsigned i=1; i<words.size(); i++)
 					{
 						variable.push_back(words[i]);
 					}
 				}
+			}
+			return;
+		}
 
-            }
-            return;
-        }
+		std::string input_file_;
+		std::vector<std::string> input_text_;
 
-
-        std::string input_file_;
-        std::vector<std::string> input_text_;
-
-        //USER_DEFINED_VARIABLES
+		//USER_DEFINED_VARIABLES
 };
 
 #endif // PROTOTYPE_H

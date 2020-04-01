@@ -1,3 +1,4 @@
+import os
 from utils import *
 from Variable import Variable
 from UnitConvertor import UnitConvertor
@@ -111,7 +112,7 @@ class PParserPy:
             self.unitconvertor.add_unit(dic["external unit"], dic["internal unit"], dic["conversion"])
 
     def __read_prototype(self):
-        f = open("Prototype.h", "r")
+        f = open(os.path.join(os.path.dirname(__file__ ), "Prototype.h"), "r")
         for i in f:
             self.__header_file.append(i.strip("\n"))
         f.close()
