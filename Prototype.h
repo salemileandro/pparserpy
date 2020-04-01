@@ -171,30 +171,15 @@ class Prototype
                 auto words = this->Split(input_text_[i]);
                 if (variable_name == words[0])
                 {
-                    variable.clear();
-                    if( words[1].size() == 1)
-                        variable.push_back(std::stod(words[1]));
-                    else
-                    {
-                        auto split = this->Split(words[1], ':');
-                        assert(split.size() == 3);
-                        double x0 = std::stod(split[0]);
-                        double xN = std::stod(split[1]);
-                        int N = std::stoi(split[2]);
-
-                        double dx = (xN - x0) / double(N-1);
-
-                        variable.push_back(x0);
-                        for(int j=1; j<N; j++)
-                        {
-                            variable.push_back(x0 + j * dx);
-                        }
-                    }
-                    break;
-                }
+					variable.clear();
+					for(unsigned i=1; i<words.size(); i++)
+					{
+						variable.push_back(std::stod(words[i]));
+					}
+				}
             }
             return;
-        }
+		}
 
         void LookForVariable(std::vector<int> &variable, std::string variable_name)
         {
@@ -209,7 +194,6 @@ class Prototype
 						variable.push_back(std::stoi(words[i]));
 					}
 				}
-
             }
             return;
         }

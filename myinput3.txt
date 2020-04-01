@@ -1,0 +1,8 @@
+TimeAxis.Start                0
+TimeAxis.End                  10
+TimeAxis.Nsteps               1000
+File.LoadPotential            0
+File.Potential                potential.dat
+Occupation.n                  1 2 3 
+Random.text                   this is a sentence 
+Test.VectorDoubleUnitConv     0 1 2 3 

@@ -47,6 +47,34 @@
     Internal Unit   = None
     #Comment         = Filename of external potential (read only if File.LoadPotential is set to True !)
 
+!new_var
+    Namespace       = Occupation
+    Name            = n
+    Type            = vector int
+    default         = 1 2 3
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Occupation
+
+!new_var
+    Namespace       = Random
+    Name            = text
+    Type            = vector string
+    default         = this is a sentence
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Occupation
+
+!new_var
+    Namespace       = Test
+    Name            = VectorDoubleUnitConv
+    Type            = vector double
+    default         = 0.0 1.0 2.0 3.0
+    External Unit   = fs
+    Internal Unit   = au
+    Comment         = Occupation
+
+
 !new_unit
     External Unit   = fs
     Internal Unit   = au

@@ -49,9 +49,16 @@ class ReadInput
 			this->LookForVariable(timeaxis_nsteps_, std::string("TimeAxis.Nsteps"));
 			this->LookForVariable(file_loadpotential_, std::string("File.LoadPotential"));
 			this->LookForVariable(file_potential_, std::string("File.Potential"));
+			this->LookForVariable(occupation_n_, std::string("Occupation.n"));
+			this->LookForVariable(random_text_, std::string("Random.text"));
+			this->LookForVariable(test_vectordoubleunitconv_, std::string("Test.VectorDoubleUnitConv"));
 
 			this->timeaxis_start_ *= 2.4188843265857e-17;
 			this->timeaxis_end_ *= 2.4188843265857e-17;
+			for(unsigned i=0; i<test_vectordoubleunitconv_.size(); i++)
+			{
+				test_vectordoubleunitconv_[i] *= 2.4188843265857e-17;
+			}
 
         }
 
@@ -62,6 +69,9 @@ class ReadInput
 		int Get_TimeAxis_Nsteps() { return timeaxis_nsteps_;}
 		bool Get_File_LoadPotential() { return file_loadpotential_;}
 		std::string Get_File_Potential() { return file_potential_;}
+		std::vector<int> Get_Occupation_n() { return occupation_n_;}
+		std::vector<std::string> Get_Random_text() { return random_text_;}
+		std::vector<double> Get_Test_VectorDoubleUnitConv() { return test_vectordoubleunitconv_;}
 
 
 
@@ -74,6 +84,24 @@ class ReadInput
 			write << "TimeAxis.Nsteps" << "               " << timeaxis_nsteps_ << std::endl;
 			write << "File.LoadPotential" << "            " << file_loadpotential_ << std::endl;
 			write << "File.Potential" << "                " << file_potential_ << std::endl;
+
+			write << "Occupation.n" << "                  ";
+			for(unsigned i=0; i<occupation_n_.size(); i++)
+				write << occupation_n_[i] << " ";
+			write << std::endl;
+
+
+			write << "Random.text" << "                   ";
+			for(unsigned i=0; i<random_text_.size(); i++)
+				write << random_text_[i] << " ";
+			write << std::endl;
+
+
+			write << "Test.VectorDoubleUnitConv" << "     ";
+			for(unsigned i=0; i<test_vectordoubleunitconv_.size(); i++)
+				write << test_vectordoubleunitconv_[i] << " ";
+			write << std::endl;
+
 			write.close();
 		}
 
@@ -184,30 +212,15 @@ class ReadInput
                 auto words = this->Split(input_text_[i]);
                 if (variable_name == words[0])
                 {
-                    variable.clear();
-                    if( words[1].size() == 1)
-                        variable.push_back(std::stod(words[1]));
-                    else
-                    {
-                        auto split = this->Split(words[1], ':');
-                        assert(split.size() == 3);
-                        double x0 = std::stod(split[0]);
-                        double xN = std::stod(split[1]);
-                        int N = std::stoi(split[2]);
-
-                        double dx = (xN - x0) / double(N-1);
-
-                        variable.push_back(x0);
-                        for(int j=1; j<N; j++)
-                        {
-                            variable.push_back(x0 + j * dx);
-                        }
-                    }
-                    break;
-                }
+					variable.clear();
+					for(unsigned i=1; i<words.size(); i++)
+					{
+						variable.push_back(std::stod(words[i]));
+					}
+				}
             }
             return;
-        }
+		}
 
         void LookForVariable(std::vector<int> &variable, std::string variable_name)
         {
@@ -222,7 +235,6 @@ class ReadInput
 						variable.push_back(std::stoi(words[i]));
 					}
 				}
-
             }
             return;
         }
@@ -254,6 +266,9 @@ class ReadInput
 		int timeaxis_nsteps_ = 1000;
 		bool file_loadpotential_ = false;
 		std::string file_potential_ = "potential.dat";
+		std::vector<int> occupation_n_ = {1,2,3};
+		std::vector<std::string> random_text_ = {"this","is","a","sentence"};
+		std::vector<double> test_vectordoubleunitconv_ = {0.0,1.0,2.0,3.0};
 };
 
 #endif // READINPUT_H

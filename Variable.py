@@ -1,7 +1,7 @@
 fields = [("namespace", True),
           ("name", True),
           ("type", True),
-          ("default", True),
+          ("default", False),
           ("external unit", False),
           ("internal unit", False),
           ("comment", False),
@@ -10,7 +10,17 @@ fields = [("namespace", True),
 field_list = [f[0] for f in fields]
 field_must_exist = [f[1] for f in fields]
 
-type_list = ["double", "int", "string", "bool"]
+type = [("double", "0.0"),
+        ("int", "0"),
+        ("std::string", "\"\""),
+        ("bool", "0"),
+        ]
+
+type_list = [f[0] for f in type]
+type_default = [f[1] for f in type]
+
+type_list = type_list + ["std::vector<" + f + ">" for f in type_list]
+type_default = type_default + [ f for f in type_default]
 
 
 class Variable:
@@ -64,9 +74,11 @@ class Variable:
 
         self.__populate_data_dict(str_list)
         self.__complete_data_dict()
-        self.__check_type()
         self.__nonify()
+        self.__standardize()
+        self.__check_type()
         self.__set_internal_names()
+        self.__set_default()
 
     def __populate_data_dict(self, str_list):
         """
@@ -143,6 +155,52 @@ class Variable:
         self.__data["user_name"] = self.__data["namespace"] + "." + self.__data["name"]
         self.__data["get_name"] = "Get_" + self.__data["namespace"] + "_" + self.__data["name"]
 
+    def __standardize(self):
+        """
+        Modify the types and default to match cpp std notations
+        :return:
+        """
+        self.__data["type"] = self.__data["type"].replace("vector", "std::vector").replace("string", "std::string")
+        if "std::vector" in self.__data["type"]:
+            words = self.__data["type"].split(" ")
+            words = list(filter(None, words))
+            self.__data["type"] = words[0] + "<" + words[1] + ">"
+
+    def __set_default(self):
+        if self.__data["default"] is None:
+            for i in range(0, len(type_list)):
+                if self.__data["type"] == type_list[i]:
+                    self.__data["default"] = type_default[i]
+        else:
+            # If the type is string pre/ap-pend char "
+            if self.__data["type"] == "std::string":
+                self.__data["default"] = "\"" + self.__data["default"] + "\""
+
+            # If the type is vector, then we split the elements
+            if "std::vector" in self.__data["type"]:
+                words = self.__data["default"].split(" ")
+                words = list(filter(None, words))
+
+                # If its a vector AND a string, then we pre/ap-pend " to all elements
+                if "std::string" in self.__data["type"]:
+                    for i in range(0, len(words)):
+                        words[i] = "\"" + words[i] + "\""
+
+                # Built a C++ list_initializer syntax
+                self.__data["default"] = "{"
+                for i in range(0, len(words)):
+                    self.__data["default"] += words[i]
+                    if i != len(words) -1:
+                        self.__data["default"] += ","
+                self.__data["default"] += "}"
+
+            elif self.__data["type"] == "bool":
+                if self.__data["default"] == "1" or self.__data["default"].lower() == "true":
+                    self.__data["default"] = "true"
+                else:
+                    self.__data["default"] = "false"
+
+
     def __getitem__(self, item):
         return self.__data[item]
 
@@ -157,8 +215,12 @@ if __name__ == "__main__":
     print("Testing the Variable class.")
     x = Variable()
 
-    test_list = ["\tNamespace = TimeAxis\n", "\tName = Start", "Type = double", "Default = 0.0"]
+    for t in type_list:
+        t = t.replace("std::", "").replace("<", " ").replace(">", " ")
+        print(t)
 
-    x.parse(test_list)
+        test_list = ["\tNamespace = TimeAxis\n", "\tName = Start", "Type = %s" %t, "Default = None"]
 
-    print(x)
+        x.parse(test_list)
+
+        print(x)

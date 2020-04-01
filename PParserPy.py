@@ -146,7 +146,14 @@ class PParserPy:
             else:
                 for variable in self.variable_list:
                     if variable["external unit"] is not None:
-                        new_file.append("\t\t\tthis->%s *= %s;"
+                        if "vector" in variable["type"]:
+                            new_file.append("\t\t\tfor(unsigned i=0; i<%s.size(); i++)" % variable["cpp_name"])
+                            new_file.append("\t\t\t{")
+                            new_file.append("\t\t\t\t%s[i] *= %s;" % (variable["cpp_name"], self.unitconvertor[variable["external unit"]][variable["internal unit"]]) )
+                            new_file.append("\t\t\t}")
+
+                        else:
+                            new_file.append("\t\t\tthis->%s *= %s;"
                                         % (variable["cpp_name"], self.unitconvertor[variable["external unit"]][variable["internal unit"]]))
         self.__header_file = new_file[:]
 
@@ -170,13 +177,17 @@ class PParserPy:
                 new_file.append(self.__header_file[i])
             else:
                 for variable in self.variable_list:
-                    type = variable["type"]
-
-                    if type == "string":
-                        type = "std::" + type
-
-                    new_file.append("\t\t\twrite << \"%s\" << \"%s\" << %s << std::endl;"
+                    if "vector" in variable["type"]:
+                        new_file.append("")
+                        new_file.append("\t\t\twrite << \"%s\" << \"%s\";" % (variable["user_name"], (30 - len(variable["user_name"])) * " ",))
+                        new_file.append("\t\t\tfor(unsigned i=0; i<%s.size(); i++)" % variable["cpp_name"])
+                        new_file.append("\t\t\t\twrite << %s[i] << \" \";" % (variable["cpp_name"]))
+                        new_file.append("\t\t\twrite << std::endl;")
+                        new_file.append("")
+                    else:
+                        new_file.append("\t\t\twrite << \"%s\" << \"%s\" << %s << std::endl;"
                                     % (variable["user_name"], (30 - len(variable["user_name"])) * " ", variable["cpp_name"]))
+
         self.__header_file = new_file[:]
 
     def __user_defined_variables_call(self):
@@ -186,19 +197,8 @@ class PParserPy:
                 new_file.append(self.__header_file[i])
             else:
                 for variable in self.variable_list:
-                    type = variable["type"]
-                    default = variable["default"]
 
-                    if type == "string":
-                        type = "std::" + type
-                        default = "\"" + default + "\""
 
-                    if type == "bool":
-                        if default == "0" or default.lower() == "false":
-                            default = "false"
-                        if default == "1" or default.lower() == "true":
-                            default = "true"
-
-                    new_file.append("\t\t%s %s = %s;" % (type, variable["cpp_name"], default))
+                    new_file.append("\t\t%s %s = %s;" % (variable["type"], variable["cpp_name"], variable["default"]))
         self.__header_file = new_file[:]
 
