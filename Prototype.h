@@ -172,9 +172,27 @@ class Prototype
 				if (variable_name == words[0])
 				{
 					variable.clear();
-					for(unsigned i=1; i<words.size(); i++)
+					if(words[1].find(':') != std::string::npos && words.size() == 2)
 					{
-						variable.push_back(std::stod(words[i]));
+						auto bound = this->Split(words[1], ':');
+						assert(bound.size() == 3);
+						double x_start = std::stod(bound[0]);
+						double x_end   = std::stod(bound[1]);
+						int N = std::stoi(bound[2]);
+						double dx = (x_end - x_start) / (N - 1);
+						variable.resize(N);
+						variable[0] = x_start;
+						for(unsigned i=1; i<N; i++)
+						{
+							variable[i] = variable[i-1] + dx;
+						}
+					}
+					else
+					{
+						for(unsigned i=1; i<words.size(); i++)
+						{
+							variable.push_back(std::stod(words[i]));
+						}
 					}
 				}
 			}

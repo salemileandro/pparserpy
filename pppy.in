@@ -70,8 +70,8 @@
     Name            = VectorDoubleUnitConv
     Type            = vector double
     default         = 0.0 1.0 2.0 3.0
-    External Unit   = fs
-    Internal Unit   = au
+    External Unit   = None
+    Internal Unit   = None
     Comment         = Occupation
 
 
