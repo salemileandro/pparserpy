@@ -99,6 +99,8 @@ class Variable:
             words = line.replace("\t", " ").strip("\n").strip(" ").split("=")
             words = [x.strip("\n").strip(" ") for x in words]
             words[0] = words[0].lower()
+            if len(words) == 1 and words[0] == "":
+                continue
             assert(len(words) == 2)
             assert(words[0] in field_list)
             self.__data[words[0]] = words[1]
