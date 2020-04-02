@@ -1,0 +1,10 @@
+Test.Var0                     10
+Test.Var1                     10
+Test.Var2                     1
+Test.Var3                     1
+Test.Var4                     This_is_my_string_sentence
+Test.Var5                     0 1 2 3 
+Test.Var6                     0 1 2 3 
+Test.Var7                     0 1 2 3 
+Test.Var8                     0 1 0 1 
+Test.Var9                     This is my string sentence 

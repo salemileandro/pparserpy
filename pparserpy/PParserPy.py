@@ -40,6 +40,7 @@ class PParserPy:
         self.__user_defined_variables_call()
         self.__generate_input_file_call()
 
+    def write_header(self):
         f = open("%s.h" %self.__name, "w+")
         for i in self.__header_file:
             f.write("%s\n" % i)

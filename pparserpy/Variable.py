@@ -20,7 +20,7 @@ type_list = [f[0] for f in type]
 type_default = [f[1] for f in type]
 
 type_list = type_list + ["std::vector<" + f + ">" for f in type_list]
-type_default = type_default + [ f for f in type_default]
+type_default = type_default + [f for f in type_default]
 
 
 class Variable:

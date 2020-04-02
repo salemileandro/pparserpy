@@ -1,0 +1,116 @@
+### This is a template that gives and idea on how to write your own pp.in file
+### Any line that start with '#' is considered as a comment, any text set after '#' is disregarded
+### e.g. "SomeTextThatPParserPyWillRead # But This Is NOT Read"
+
+### A variable is declared by first calling the "!new_var" flag. Following this flag, the variable attributes
+### and corresponding values are to be written
+
+!new_var
+    Namespace       = TestDouble
+    Name            = Var1
+    Type            = double
+    default         = 0.0
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Testing the double type without any kind of unit change
+
+!new_var
+    Namespace       = TestDouble
+    Name            = Var2
+    Type            = double
+    default         = 10.0
+    External Unit   = fs
+    Internal Unit   = au
+    Comment         = Testing the double type without any kind of unit change
+
+!new_var
+    Namespace       = TestInt
+    Name            = Var1
+    Type            = int
+    default         = 1000
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Testing the int type
+
+!new_var
+    Namespace       = TestBool
+    Name            = True
+    Type            = bool
+    default         = 1
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Testing the bool type with TRUE default
+
+!new_var
+    Namespace       = TestBool
+    Name            = False
+    Type            = bool
+    default         = 0
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Testing the bool type with FALSE default
+
+!new_var
+    Namespace       = TestString
+    Name            = Var1
+    Type            = string
+    default         = potential.dat
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Testing the string type
+
+!new_var
+    Namespace       = TestVecInt
+    Name            = Var1
+    Type            = vector int
+    default         = 1 2 3
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Vector of integers
+
+!new_var
+    Namespace       = TestVecDouble
+    Name            = Var1
+    Type            = vector double
+    default         = 3.0 4.0 5.0
+    External Unit   = fs
+    Internal Unit   = au
+    Comment         = Vector of double with units
+
+!new_var
+    Namespace       = TestVecDouble
+    Name            = Var2
+    Type            = vector double
+    default         = 3.0 4.0 5.0
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Vector of double
+
+!new_var
+    Namespace       = TestVecString
+    Name            = Var1
+    Type            = vector string
+    default         = This is my string sentence
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Vector of strings
+
+!new_var
+    Namespace       = TestVecBool
+    Name            = Var1
+    Type            = vector bool
+    default         = 0 0 0 1
+    External Unit   = None
+    Internal Unit   = None
+    Comment         = Vector of boolean
+
+
+!new_unit
+    External Unit   = fs
+    Internal Unit   = au
+    Conversion      = 2.4188843265857e-17
+
+!new_unit
+    External Unit   = s
+    Internal Unit   = au
+    Conversion      = 2.4188843265857e-32

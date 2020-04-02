@@ -23,6 +23,7 @@ if len(arg_list) != 2:
     assert(False)
 
 x = PParserPy("pppy.in", name=arg_list[1], verbose=False)
+x.write_header()
 
 print("Header file %s.h generated !" % arg_list[1])
 print("")
