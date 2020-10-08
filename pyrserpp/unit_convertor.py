@@ -1,4 +1,3 @@
-
 class UnitConvertor:
     """
     Small class that allows for the easy conversion between two different units. When a conversion is added, the
@@ -8,7 +7,7 @@ class UnitConvertor:
     def __init__(self):
         self.__converter = {}
 
-    def add_unit(self, external_unit: str, internal_unit:str, conversion: float):
+    def add_unit(self, external_unit: str, internal_unit: str, conversion: float):
         """
         Teach the UnitConvertor object a new unit conversion. The inverse conversion is also
         defined automatically. I also learn the unit conversion (same unit -> conversion = 1.0)
@@ -32,27 +31,30 @@ class UnitConvertor:
             self.__converter[internal_unit] = {}
         self.__converter[internal_unit][external_unit] = 1.0 / conversion
 
-        # Add the direct unit
+        # Add the direct unitary conversion ( 1 "unit" = 1 "unit" )
         if external_unit not in self.__converter:
             self.__converter[external_unit] = {}
         self.__converter[external_unit][external_unit] = 1.0
 
-        # Add the inverse unit
+        # Add the inverse unitary conversion ( 1 "unit" = 1 "unit" )
         if internal_unit not in self.__converter:
             self.__converter[internal_unit] = {}
         self.__converter[internal_unit][internal_unit] = 1.0
 
-    def can_i_convert(self, external_unit: str, internal_unit: str):
+    def is_convertible(self, external_unit: str, internal_unit: str) -> bool:
+        """
+        Check if the unit conversion external -> internal is possible using the UnitConvertor object
+
+        :param external_unit: str   External unit (user unit)
+        :param internal_unit: str   Internal unit (cpp program unit)
+        :return:                    True if conversion possible, False otherwhise
+        """
         if external_unit in self.__converter:
             if internal_unit in self.__converter[external_unit]:
                 return True
-            else:
-                return False
-        else:
-            return False
+        return False
 
-
-    def __getitem__(self, item):
+    def __getitem__(self, item: str) -> dict:
         """
         Overloading the [] operator for user friendly access to UnitConvertor object.
         The conversion factor can be accessed in this way (3rd line of the following code)
@@ -80,6 +82,7 @@ if __name__ == "__main__":
     x.add_unit("ns", "s", 1e-9)
     x.add_unit("ms", "s", 1e-3)
 
+
     print("Printing available conversions :")
     print(x)
 
@@ -87,4 +90,4 @@ if __name__ == "__main__":
     units = ["fs", "ns", "s"]
     for i in units:
         for j in units:
-            print("Can I convert %s to %s ? %d" %(i, j, x.can_i_convert(i,j)))
+            print("Can I convert %s to %s ? %d" %(i, j, x.is_convertible(i,j)))

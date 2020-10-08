@@ -1,5 +1,5 @@
-#ifndef PROTOTYPE_H
-#define PROTOTYPE_H
+#ifndef READINPUT_H
+#define READINPUT_H
 
 #include <iostream>
 #include <fstream>
@@ -7,11 +7,11 @@
 #include <vector>
 #include <cassert>
 
-class Prototype
+class ReadInput
 {
 	public:
 
-		Prototype(std::string input_file, char comment = '#')
+		ReadInput(std::string input_file, char comment = '#')
 		{
 		/* ***************************
 		*** READING THE INPUT FILE ***
@@ -44,15 +44,28 @@ class Prototype
 			read.close();
 
 
-			//LOOK_FOR_VARIABLE_CALL
+			this->LookForVariable(grid_x_start_, std::string("Grid.X_Start"));
+			this->LookForVariable(grid_x_end_, std::string("Grid.X_End"));
+			this->LookForVariable(grid_n_x_, std::string("Grid.N_X"));
+			this->LookForVariable(grid_t_start_, std::string("Grid.T_Start"));
+			this->LookForVariable(grid_t_end_, std::string("Grid.T_End"));
+			this->LookForVariable(grid_n_t_, std::string("Grid.N_T"));
+			this->LookForVariable(parameter_diffusionconstant_, std::string("Parameter.DiffusionConstant"));
 
-			//UNIT_CONVERSION_CALL
+			this->grid_x_start_ *= 100.0;
+			this->grid_x_end_ *= 100.0;
 
 		}
 
-		~Prototype(){};
+		~ReadInput(){};
 
-		//DEFINITION_OF_GET_FUNCTIONS
+		double Get_Grid_X_Start() { return grid_x_start_;}
+		double Get_Grid_X_End() { return grid_x_end_;}
+		int Get_Grid_N_X() { return grid_n_x_;}
+		double Get_Grid_T_Start() { return grid_t_start_;}
+		double Get_Grid_T_End() { return grid_t_end_;}
+		int Get_Grid_N_T() { return grid_n_t_;}
+		double Get_Parameter_DiffusionConstant() { return parameter_diffusionconstant_;}
 
 
 
@@ -60,7 +73,13 @@ class Prototype
 		{
 			std::ofstream write(filename.c_str());
 			assert(write.is_open());
-			//GENERATE_INPUT_FILE
+			write << "Grid.X_Start" << "                  " << grid_x_start_ << std::endl;
+			write << "Grid.X_End" << "                    " << grid_x_end_ << std::endl;
+			write << "Grid.N_X" << "                      " << grid_n_x_ << std::endl;
+			write << "Grid.T_Start" << "                  " << grid_t_start_ << std::endl;
+			write << "Grid.T_End" << "                    " << grid_t_end_ << std::endl;
+			write << "Grid.N_T" << "                      " << grid_n_t_ << std::endl;
+			write << "Parameter.DiffusionConstant" << "   " << parameter_diffusionconstant_ << std::endl;
 			write.close();
 		}
 
@@ -258,7 +277,13 @@ class Prototype
 		std::string input_file_;
 		std::vector<std::string> input_text_;
 
-		//USER_DEFINED_VARIABLES
+		double grid_x_start_ = 0.0;
+		double grid_x_end_ = 10.0;
+		int grid_n_x_ = 1000;
+		double grid_t_start_ = 0.0;
+		double grid_t_end_ = 100.0;
+		int grid_n_t_ = 1000;
+		double parameter_diffusionconstant_ = 1.5;
 };
 
-#endif // PROTOTYPE_H
+#endif // READINPUT_H

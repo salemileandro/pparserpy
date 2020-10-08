@@ -1,5 +1,5 @@
-#ifndef READINPUT_H
-#define READINPUT_H
+#ifndef PROTOTYPE_H
+#define PROTOTYPE_H
 
 #include <iostream>
 #include <fstream>
@@ -7,11 +7,11 @@
 #include <vector>
 #include <cassert>
 
-class ReadInput
+class Prototype
 {
 	public:
 
-		ReadInput(std::string input_file, char comment = '#')
+		Prototype(std::string input_file, char comment = '#')
 		{
 		/* ***************************
 		*** READING THE INPUT FILE ***
@@ -44,37 +44,15 @@ class ReadInput
 			read.close();
 
 
-			this->LookForVariable(test_var0_, std::string("Test.Var0"));
-			this->LookForVariable(test_var1_, std::string("Test.Var1"));
-			this->LookForVariable(test_var2_, std::string("Test.Var2"));
-			this->LookForVariable(test_var3_, std::string("Test.Var3"));
-			this->LookForVariable(test_var4_, std::string("Test.Var4"));
-			this->LookForVariable(test_var5_, std::string("Test.Var5"));
-			this->LookForVariable(test_var6_, std::string("Test.Var6"));
-			this->LookForVariable(test_var7_, std::string("Test.Var7"));
-			this->LookForVariable(test_var8_, std::string("Test.Var8"));
-			this->LookForVariable(test_var9_, std::string("Test.Var9"));
+			//LOOK_FOR_VARIABLE_CALL
 
-			this->test_var1_ *= 3.28084;
-			for(unsigned i=0; i<test_var6_.size(); i++)
-			{
-				test_var6_[i] *= 3.28084;
-			}
+			//UNIT_CONVERSION_CALL
 
 		}
 
-		~ReadInput(){};
+		~Prototype(){};
 
-		double Get_Test_Var0() { return test_var0_;}
-		double Get_Test_Var1() { return test_var1_;}
-		int Get_Test_Var2() { return test_var2_;}
-		bool Get_Test_Var3() { return test_var3_;}
-		std::string Get_Test_Var4() { return test_var4_;}
-		std::vector<double> Get_Test_Var5() { return test_var5_;}
-		std::vector<double> Get_Test_Var6() { return test_var6_;}
-		std::vector<int> Get_Test_Var7() { return test_var7_;}
-		std::vector<bool> Get_Test_Var8() { return test_var8_;}
-		std::vector<std::string> Get_Test_Var9() { return test_var9_;}
+		//DEFINITION_OF_GET_FUNCTIONS
 
 
 
@@ -82,53 +60,20 @@ class ReadInput
 		{
 			std::ofstream write(filename.c_str());
 			assert(write.is_open());
-			write << "Test.Var0" << "                     " << test_var0_ << std::endl;
-			write << "Test.Var1" << "                     " << test_var1_ << std::endl;
-			write << "Test.Var2" << "                     " << test_var2_ << std::endl;
-			write << "Test.Var3" << "                     " << test_var3_ << std::endl;
-			write << "Test.Var4" << "                     " << test_var4_ << std::endl;
-
-			write << "Test.Var5" << "                     ";
-			for(unsigned i=0; i<test_var5_.size(); i++)
-				write << test_var5_[i] << " ";
-			write << std::endl;
-
-
-			write << "Test.Var6" << "                     ";
-			for(unsigned i=0; i<test_var6_.size(); i++)
-				write << test_var6_[i] << " ";
-			write << std::endl;
-
-
-			write << "Test.Var7" << "                     ";
-			for(unsigned i=0; i<test_var7_.size(); i++)
-				write << test_var7_[i] << " ";
-			write << std::endl;
-
-
-			write << "Test.Var8" << "                     ";
-			for(unsigned i=0; i<test_var8_.size(); i++)
-				write << test_var8_[i] << " ";
-			write << std::endl;
-
-
-			write << "Test.Var9" << "                     ";
-			for(unsigned i=0; i<test_var9_.size(); i++)
-				write << test_var9_[i] << " ";
-			write << std::endl;
-
+			//GENERATE_INPUT_FILE
 			write.close();
 		}
 
 	protected:
 
-	private:
+	private:		
 
 		inline bool IsFileExists (const std::string& filename)
 		{
 			std::ifstream f(filename.c_str());
 			return f.good();
 		}
+
 
 		std::vector<std::string> Split(std::string str, char separator = ' ')
 		{
@@ -314,16 +259,7 @@ class ReadInput
 		std::string input_file_;
 		std::vector<std::string> input_text_;
 
-		double test_var0_ = 10.0;
-		double test_var1_ = 10.0;
-		int test_var2_ = 1;
-		bool test_var3_ = true;
-		std::string test_var4_ = "This_is_my_string_sentence";
-		std::vector<double> test_var5_ = {0,1,2,3};
-		std::vector<double> test_var6_ = {0,1,2,3};
-		std::vector<int> test_var7_ = {0,1,2,3};
-		std::vector<bool> test_var8_ = {0,1,0,1};
-		std::vector<std::string> test_var9_ = {"This","is","my","string","sentence"};
+		//USER_DEFINED_VARIABLES
 };
 
-#endif // READINPUT_H
+#endif // PROTOTYPE_H

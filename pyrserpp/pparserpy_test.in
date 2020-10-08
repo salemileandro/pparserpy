@@ -1,0 +1,486 @@
+!new_var
+  Namespace     = DMEvo
+  Name          = Mode    
+  Type          = string
+  Default       = Compute
+  External Unit = None          
+  Internal Unit = None     
+  Comment       = Computation mode for the matrix elements. Can be "Compute" or "Read". "Compute" is default
+
+!new_var
+  Namespace     = DMEvo
+  Name          = ComputeFermi
+  Type          = bool
+  Default       = 1
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the Fermi energy (should be around zero by reference!). Default is 1 for safety purpose
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = ComputeAllAtoms 
+  Type          = bool
+  Default       = 1
+  External Unit = None         
+  Internal Unit = None 
+  Comment       = Compute all atoms if true, otherwise fallback on Matrix.SelectedAtoms
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = SelectedAtoms
+  Type          = vector int
+  Default       = 1
+  External Unit = None
+  Internal Unit = None
+  Comment       = List of selected atoms (e.g. 1 2 4 selects the first, second and fourth atom). Effective ONLY IF Matrix.ComputeAllAtoms is FALSE
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = ComputeSpin
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the Spin matrix elements
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = ComputeOrbital
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the Orbital matrix elements
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = ComputeSpinCurrent
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the spin current
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = ComputeOrbitalCurrent
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = ComputeSpinFlux
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the spin flux defined as the surface integral of (1/mV) {S, -i*hbar*d/dr}
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = ComputeOrbitalFlux
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the orbital flux defined as the surface integral of (1/mV) {L, -i*hbar*d/dr}
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = ComputeChargeDensity
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the charge density
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = ComputeChargeDensityUp
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the charge density
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = ComputeChargeDensityDn
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the charge density
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteMomentum
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the momentum matrix elements
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteEnergy
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the energy vector
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteSpin
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the spin matrix elements (atom projected quantity)
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteOrbital
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the orbital matrix elements (atom projected quantity)
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteSpinCurrent
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the spin current matrix elements (atom projected quantity)
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteOrbitalCurrent
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the orbital current matrix elements (atom projected quantity)
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteSpinFlux
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the spin flux matrix elements (atom projected quantity)
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteOrbitalFlux
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the orbital flux matrix elements (atom projected quantity)
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteChargeDensity
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the charge density (atom projected quantity)
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteChargeDensityUp
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the UP charge density (atom projected quantity)
+
+
+!new_var
+  Namespace     = Matrix
+  Name          = WriteChargeDensityDn
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to write the DN charge density (atom projected quantity)
+
+
+!new_var
+  Namespace     = Pert
+  Name          = Optics
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute optical conductivity
+
+
+!new_var
+  Namespace     = Pert
+  Name          = SpinSusceptibility
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the spin susceptibility tensor
+
+
+!new_var
+  Namespace     = Pert
+  Name          = OrbitalnSusceptibility
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the orbital susceptibility tensor
+
+
+!new_var
+  Namespace     = Pert
+  Name          = SpinConductivity
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the spin conductivity tensor (Sx, Sy and Sz considered !)
+
+
+!new_var
+  Namespace     = Pert
+  Name          = OrbitalConductivity
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the orbital conductivity tensor (Lx, Ly and Lz considered !)
+
+
+!new_var
+  Namespace     = Pert
+  Name          = IFE
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the Inverse Faraday Effect
+
+
+!new_var
+  Namespace     = Pert
+  Name          = ChargeDensity
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the local polarization tensor
+
+
+!new_var
+  Namespace     = Pert
+  Name          = ChargeDensityUp
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the local polarization tensor (ONLY SPIN UP)
+
+
+!new_var
+  Namespace     = Pert
+  Name          = ChargeDensityDn
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the local polarization tensor (ONLY SPIN DN)
+
+
+!new_var
+  Namespace     = Pert
+  Name          = DeltaInter
+  Type          = double
+  Default       = 0.4
+  External Unit = eV
+  Internal Unit = Ha
+  Comment       = Broadening for the interband part of the linear response
+
+
+!new_var
+  Namespace     = Pert
+  Name          = DeltaIntra
+  Type          = double
+  Default       = 0.4
+  External Unit = eV
+  Internal Unit = Ha
+  Comment       = Broadening for the interband part of the linear response
+
+
+!new_var
+  Namespace     = Pert
+  Name          = Temperature
+  Type          = double
+  Default       = 300.0
+  External Unit = K
+  Internal Unit = a.u.
+  Comment       = Temperature for the Fermi-Dirac distribution
+
+
+!new_var
+  Namespace     = Pert
+  Name          = Optimization
+  Type          = double
+  Default       = 1e-7
+  External Unit = None
+  Internal Unit = None
+  Comment       = Optimization Parameter
+
+
+!new_var
+  Namespace     = Pert
+  Name          = CutOffUp
+  Type          = double
+  Default       = 1000.0
+  External Unit = eV
+  Internal Unit = Ha
+  Comment       = Cutoff energy above Fermi (if (E_nk-FERMI) > CutOffUp, state m>=n are not considered)
+
+
+!new_var
+  Namespace     = Pert
+  Name          = CutOffDn
+  Type          = double
+  Default       = -1000.0
+  External Unit = eV
+  Internal Unit = Ha
+  Comment       = Cutoff energy below Fermi (if (if (E_nk-FERMI) < CutOffDn, state m<=n are not considered)
+
+
+!new_var
+  Namespace     = Pert
+  Name          = Omega
+  Type          = vector double
+  Default       = 0.0
+  External Unit = eV
+  Internal Unit = Ha
+  Comment       = Omega axis (e.g. 0:8:50)
+
+
+!new_var
+  Namespace     = Pert
+  Name          = FermiShift
+  Type          = vector double
+  Default       = 0.0
+  External Unit = eV
+  Internal Unit = Ha
+  Comment       = Fermi axis (e.g. -10:10:101)
+
+# Expect variables:
+#	Compute expectation values over energy axis
+#	<A>(E) = [1.0/g(E)] * sum_k w_k sum_n f_nk A_nnk \delta(E-E_{nk}); with sum_k w_k = 1 (k-space integral)
+#	<A> = int <A>(E) g(E) f(E) dE; with g(E) the density of state and f(E) the Fermi-Dirac distribution 
+
+
+!new_var
+  Namespace     = Expect
+  Name          = BroadeningType
+  Type          = string
+  Default       = Gaussian
+  External Unit = None
+  Internal Unit = None
+  Comment       = Default broadening type along energy axis
+
+
+!new_var
+  Namespace     = Expect
+  Name          = Broadening
+  Type          = double
+  Default       = 0.026
+  External Unit = eV
+  Internal Unit = Ha
+  Comment       = Default broadening value. Default is 0.026 ev (300K broadening)
+
+
+!new_var
+  Namespace     = Expect
+  Name          = DOS
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the global DOS
+
+
+!new_var
+  Namespace     = Expect
+  Name          = PDOS
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the projected DOS (atom projected quantity)
+
+
+!new_var
+  Namespace     = Expect
+  Name          = SpinMagnetization
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the spin magnetization (atom projected quantity)
+
+
+!new_var
+  Namespace     = Expect
+  Name          = OrbitalMagnetization
+  Type          = bool
+  Default       = 0
+  External Unit = None
+  Internal Unit = None
+  Comment       = Flag to compute the orbital magnetization (atom projected quantity)
+
+
+
+###############################
+### DEFINITION OF THE UNITS ###
+###############################
+
+
+!new_unit 
+  External Unit = eV
+  Internal Unit = Ha
+  Conversion = 3.674932217565e-02
+
+
+!new_unit 
+  External Unit = K
+  Internal Unit = a.u.
+  Conversion = 3.166830000000e-06
+
+

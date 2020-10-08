@@ -1,3 +1,6 @@
+build/
+dist/
+pyrserpp_LEANDRO.egg-info/
 *.o
 __pycache*
 *main

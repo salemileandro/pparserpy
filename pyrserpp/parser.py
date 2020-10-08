@@ -1,10 +1,10 @@
 import os
-from utils import *
-from Variable import Variable
-from UnitConvertor import UnitConvertor
+from .utils import *
+from .variable import Variable
+from .unit_convertor import UnitConvertor
 
 
-class PParserPy:
+class Parser:
     """
     Class that handles the reading and parsing of the pppy.in file.
     """
@@ -41,7 +41,7 @@ class PParserPy:
         self.__generate_input_file_call()
 
     def write_header(self):
-        f = open("%s.h" %self.__name, "w+")
+        f = open("%s.h" % self.__name, "w+")
         for i in self.__header_file:
             f.write("%s\n" % i)
         f.close()
@@ -124,6 +124,7 @@ class PParserPy:
             self.__header_file[i] = self.__header_file[i].replace("Prototype", "%s" % self.__name)
             self.__header_file[i] = self.__header_file[i].replace("prototype", "%s" % self.__name.lower())
 
+
     def __look_for_variable_call(self):
         new_file = []
         for i in range(0, len(self.__header_file)):
@@ -131,7 +132,7 @@ class PParserPy:
                 new_file.append(self.__header_file[i])
             else:
                 for variable in self.variable_list:
-                    new_file.append("\t\t\tthis->LookForVariable(%s, std::string(\"%s\"));" % (variable["cpp_name"], variable["user_name"]))
+                    new_file.append("\t\t\tthis->LookForVariable(%s,%s std::string(\"%s\"));" % (variable["cpp_name"], " " * (40 - len(variable["cpp_name"])) , variable["user_name"]))
         self.__header_file = new_file[:]
 
     def __unit_conversion_call(self):
@@ -169,7 +170,14 @@ class PParserPy:
                     type = variable["type"]
                     if type in ["string"]:
                         type = "std::" + type
-                    new_file.append("\t\t%s %s() { return %s;}" % (type, variable["get_name"], variable["cpp_name"]))
+                    new_file.append("\t\t/**")
+                    new_file.append("\t\t *   @brief %s" % (variable["comment"]))
+                    new_file.append("\t\t */")
+                    new_file.append("\t\t%s %s()" % (type, variable["get_name"]))
+                    new_file.append("\t\t{")
+                    new_file.append("\t\t\treturn %s;" % (variable["cpp_name"]))
+                    new_file.append("\t\t}")
+                    new_file.append("")
         self.__header_file = new_file[:]
 
     def __generate_input_file_call(self):
@@ -181,14 +189,14 @@ class PParserPy:
                 for variable in self.variable_list:
                     if "vector" in variable["type"]:
                         new_file.append("")
-                        new_file.append("\t\t\twrite << \"%s\" << \"%s\";" % (variable["user_name"], (30 - len(variable["user_name"])) * " ",))
+                        new_file.append("\t\t\twrite << \"%s\" << \"%s\";" % (variable["user_name"], (35 - len(variable["user_name"])) * " ",))
                         new_file.append("\t\t\tfor(unsigned i=0; i<%s.size(); i++)" % variable["cpp_name"])
                         new_file.append("\t\t\t\twrite << %s[i] << \" \";" % (variable["cpp_name"]))
                         new_file.append("\t\t\twrite << std::endl;")
                         new_file.append("")
                     else:
                         new_file.append("\t\t\twrite << \"%s\" << \"%s\" << %s << std::endl;"
-                                    % (variable["user_name"], (30 - len(variable["user_name"])) * " ", variable["cpp_name"]))
+                                    % (variable["user_name"], (35 - len(variable["user_name"])) * " ", variable["cpp_name"]))
 
         self.__header_file = new_file[:]
 

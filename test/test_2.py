@@ -1,6 +1,18 @@
+import pyrserpp
+import sys
+
+print(sys.path)
+
+print(pyrserpp.Leandroadd(3.0, 4.0))
+
+exit()
+
+
+
+
 import os
-from PParserPy import *
-import Variable
+from .PParserPy import *
+from .Variable import  *
 import shutil
 
 

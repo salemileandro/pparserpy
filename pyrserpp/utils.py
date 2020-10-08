@@ -2,7 +2,7 @@ def read_file(filename: str, ignore_char: str = "#") -> list:
     """
     Read the file "filename" and stores it into a list of string where each element
     is a line of the file. For each lines, the characters after the "ignore_char" character (if present)
-    are discarded. If the line is empty, i.e. a real empty line or a line that conainted "ignore_char" as
+    are discarded. If the line is empty, i.e. a real empty line or a line that containted "ignore_char" as
     first character, then the line is discarded
 
     :param filename: str

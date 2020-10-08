@@ -1,0 +1,7 @@
+Grid.X_Start                  0
+Grid.X_End                    10
+Grid.N_X                      1000
+Grid.T_Start                  0
+Grid.T_End                    100
+Grid.N_T                      1000
+Parameter.DiffusionConstant   1.5

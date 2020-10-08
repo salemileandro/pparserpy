@@ -1,3 +1,15 @@
+"""
+Fields defined in the PyrserPP input file.
+List of tuple (field_name:str, is_necessary:bool).
+The fields supported are (* = Necessary field)
+   *namespace       : Generic group name for the variable
+   *name            : Specific name for the variable
+   *type            : Type (can be primitive, e.g. "double" or vector, e.g ("vector double")
+    default         : Default value for the specific input parser (Note that PyrserPP has internal default for each types)
+    external unit   : Unit in which the user is gonna input the data
+    internal unit   : Unit in which the CPP program is gonna handle things
+    comment         : Comment that will be included in the .h file for clarity
+"""
 fields = [("namespace", True),
           ("name", True),
           ("type", True),
@@ -10,6 +22,7 @@ fields = [("namespace", True),
 field_list = [f[0] for f in fields]
 field_must_exist = [f[1] for f in fields]
 
+""" List of tuples (primitive_type, default_value) supported by the code """
 type = [("double", "0.0"),
         ("int", "0"),
         ("std::string", "\"\""),
@@ -19,6 +32,7 @@ type = [("double", "0.0"),
 type_list = [f[0] for f in type]
 type_default = [f[1] for f in type]
 
+### All primitive t
 type_list = type_list + ["std::vector<" + f + ">" for f in type_list]
 type_default = type_default + [f for f in type_default]
 
@@ -88,19 +102,19 @@ class Variable:
             str_list[1] = "   Name      = Start      "
             [...]
 
-        Only two things are ensured here:
-            1. That each line contains only 1 "=" char, i.e. for splitting
-            2. That the leftside of the "=" char is an allowed field (see field_list)
-
         :param str_list: list   List of string where each element correspond to one entry of a variable
         :return: None
         """
         for line in str_list:
-            words = line.replace("\t", " ").strip("\n").strip(" ").split("=")
+            words = line.replace("\t", " ").strip("\n").strip(" ")
+            idx = words.find("=")
+            words = [words[:idx], words[idx+1:]]
             words = [x.strip("\n").strip(" ") for x in words]
             words[0] = words[0].lower()
             if len(words) == 1 and words[0] == "":
                 continue
+            if len(words) != 2:
+                print(words)
             assert(len(words) == 2)
             assert(words[0] in field_list)
             self.__data[words[0]] = words[1]
@@ -117,7 +131,7 @@ class Variable:
                     print("Field %s as not been found ..." % field_list[i])
                     print("It must be declared !!!")
                     print("Error !")
-                    assert(False)
+                    assert False
                 else:
                     self.__data[field_list[i]] = None
 
@@ -133,7 +147,7 @@ class Variable:
             for i in type_list:
                 print("\t%s" % i)
             print("Exiting after error ...")
-            assert(False)
+            assert False
 
     def __nonify(self):
         """
@@ -155,7 +169,8 @@ class Variable:
         """
         self.__data["cpp_name"] = self.__data["namespace"].lower() + "_" + self.__data["name"].lower() + "_"
         self.__data["user_name"] = self.__data["namespace"] + "." + self.__data["name"]
-        self.__data["get_name"] = "Get_" + self.__data["namespace"] + "_" + self.__data["name"]
+        #self.__data["get_name"] = "Get" + "_" + self.__data["namespace"] + "_" + self.__data["name"]
+        self.__data["get_name"] = "Get" + "" + self.__data["namespace"] + "" + self.__data["name"]
 
     def __standardize(self):
         """
@@ -188,6 +203,17 @@ class Variable:
                     for i in range(0, len(words)):
                         words[i] = "\"" + words[i] + "\""
 
+                if "double" in self.__data["type"] and ":" in words[0]:
+                    axis = words[0].split(":")
+                    x0 = float(axis[0])
+                    xN = float(axis[1])
+                    N = int(axis[2])
+                    dx = (xN - x0)/ (float(N-1))
+                    x = []
+                    for k in range(0, N):
+                        x.append("%.3e" % (x0 + k * dx))
+                    words = x[:]
+
                 # Built a C++ list_initializer syntax
                 self.__data["default"] = "{"
                 for i in range(0, len(words)):
@@ -201,7 +227,6 @@ class Variable:
                     self.__data["default"] = "true"
                 else:
                     self.__data["default"] = "false"
-
 
     def __getitem__(self, item):
         return self.__data[item]
@@ -221,7 +246,7 @@ if __name__ == "__main__":
         t = t.replace("std::", "").replace("<", " ").replace(">", " ")
         print(t)
 
-        test_list = ["\tNamespace = TimeAxis\n", "\tName = Start", "Type = %s" %t, "Default = None"]
+        test_list = ["\tNamespace = TimeAxis\n", "\tName = Start", "Type = %s" %t, "Default = None", "Comment = comment= lots of ="]
 
         x.parse(test_list)
 
